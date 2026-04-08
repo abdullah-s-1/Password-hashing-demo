@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <title>Password Hashing Demo</title>
+  <meta name="description" content="Interactive password security and hashing demo built with vanilla JavaScript and the Web Crypto API." />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <section class="hero">
+      <div class="hero-tag">Security Tool</div>
+      <p class="eyebrow">Standalone Demo</p>
+      <h1>Password Hashing Demo</h1>
+      <p class="hero-copy">
+        A browser-based demo of password strength, hashing, and salting.
+        Everything runs locally with vanilla JavaScript and the Web Crypto API.
+      </p>
+      <div class="tag-row">
+        <span class="tag">JavaScript</span>
+        <span class="tag">Web Crypto API</span>
+        <span class="tag">SHA-256</span>
+        <span class="tag">Cryptography</span>
+      </div>
+    </section>
+
+    <section class="concept-grid">
+      <article class="concept-card">
+        <h2>Hashing</h2>
+        <p>A one-way transformation that turns input into a fixed digest.</p>
+      </article>
+      <article class="concept-card">
+        <h2>Salting</h2>
+        <p>Random data changes the input so matching passwords do not share matching hashes.</p>
+      </article>
+      <article class="concept-card">
+        <h2>Cost</h2>
+        <p>Slow password hashing makes brute force attacks more expensive.</p>
+      </article>
+    </section>
+
+    <section class="tool-card">
+      <div class="card-label">01 - Password strength analyzer</div>
+      <div class="input-wrap">
+        <input class="text-input" type="password" id="pw-input" placeholder="Type a password to analyze..." autocomplete="off" />
+        <button class="icon-button" id="pw-toggle" type="button" aria-label="Toggle password visibility">Show</button>
+      </div>
+
+      <div class="strength-row">
+        <div class="bars">
+          <div class="bar" id="sb1"></div>
+          <div class="bar" id="sb2"></div>
+          <div class="bar" id="sb3"></div>
+          <div class="bar" id="sb4"></div>
+        </div>
+        <div class="strength-label" id="strength-lbl">-</div>
+      </div>
+
+      <div class="check-grid">
+        <div class="check-item" id="c-len"><span class="dot"></span>8+ characters</div>
+        <div class="check-item" id="c-up"><span class="dot"></span>Uppercase letter</div>
+        <div class="check-item" id="c-low"><span class="dot"></span>Lowercase letter</div>
+        <div class="check-item" id="c-num"><span class="dot"></span>Number</div>
+        <div class="check-item" id="c-sym"><span class="dot"></span>Special character</div>
+        <div class="check-item" id="c-long"><span class="dot"></span>12+ characters</div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="s-len">0</div>
+          <div class="stat-label">Length</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="s-ent">0 bits</div>
+          <div class="stat-label">Entropy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="s-crack">-</div>
+          <div class="stat-label">Crack time</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tool-card">
+      <div class="card-label">02 - Live hashing demo</div>
+
+      <div class="algo-tabs" id="algo-tabs">
+        <button class="algo-tab active" type="button" data-algo="SHA-256">SHA-256</button>
+        <button class="algo-tab danger" type="button" data-algo="SHA-1">SHA-1 broken</button>
+        <button class="algo-tab" type="button" data-algo="bcrypt">bcrypt simulated</button>
+      </div>
+
+      <label class="field-label" for="hash-input">Input</label>
+      <input class="text-input text-input-wide" type="text" id="hash-input" placeholder="Auto-fills from the password above, or type here..." autocomplete="off" />
+
+      <label class="field-label" for="hash-out">Hash output</label>
+      <div class="hash-output" id="hash-out">-</div>
+      <div class="algo-note" id="algo-note">
+        SHA-256 is strong for integrity checks, but password storage still needs salt and a slow algorithm like bcrypt.
+      </div>
+    </section>
+
+    <section class="tool-card">
+      <div class="card-label">03 - Salting demo</div>
+      <p class="card-copy">
+        A salt is random data added before hashing. That means identical passwords still produce different final hashes.
+      </p>
+
+      <button class="salt-button" id="salt-generate" type="button">Generate new salt</button>
+
+      <div class="salt-grid">
+        <div class="salt-row">
+          <label>Salt (32 random bytes)</label>
+          <div class="salt-value salt-color" id="salt-val">-</div>
+        </div>
+        <div class="salt-row">
+          <label>SHA-256(password + salt)</label>
+          <div class="salt-value hash-color" id="salted-val">-</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="detail-block">
+      <h2>How It Was Made</h2>
+      <p>
+        This demo uses plain HTML for structure, CSS for layout and feedback, and vanilla JavaScript for the interactive logic.
+        Real SHA digests are generated with the browser's built-in Web Crypto API.
+      </p>
+      <ul class="build-list">
+        <li>HTML and CSS handle the layout, cards, indicators, and FAQ section.</li>
+        <li>Vanilla JavaScript updates the strength meter and swaps hashing modes.</li>
+        <li>Web Crypto API handles the SHA-256 and SHA-1 digest operations.</li>
+        <li><code>crypto.getRandomValues()</code> generates a new random salt in the browser.</li>
+      </ul>
+    </section>
+
+    <section class="detail-block">
+      <h2>Questions and Answers</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question" type="button">
+            <span>What is entropy?</span>
+            <span class="faq-caret" aria-hidden="true">v</span>
+          </button>
+          <div class="faq-answer" hidden>
+            Entropy is a rough way to describe how unpredictable a password is. This demo estimates it from the password length and the character sets being used.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" type="button">
+            <span>How does SHA-256 work here?</span>
+            <span class="faq-caret" aria-hidden="true">v</span>
+          </button>
+          <div class="faq-answer" hidden>
+            The browser encodes the text into bytes, passes it to the Web Crypto API, and formats the returned digest as hexadecimal text.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" type="button">
+            <span>What does it mean that SHA-1 is broken?</span>
+            <span class="faq-caret" aria-hidden="true">v</span>
+          </button>
+          <div class="faq-answer" hidden>
+            It means practical collision attacks have been shown against SHA-1, so it should not be used for security-sensitive hashing.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" type="button">
+            <span>Why does the salted hash change every time?</span>
+            <span class="faq-caret" aria-hidden="true">v</span>
+          </button>
+          <div class="faq-answer" hidden>
+            The salt changes the input before hashing. A different salt means a different final digest even if the password stays the same.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
